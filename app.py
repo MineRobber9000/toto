@@ -40,8 +40,7 @@ class Application(tkinter.Frame):
 	def add_task(self,*args,**kwargs):
 #		print("add_task "+self.entry.get())
 		self.tasks.append(self.entry.get())
-		with open(fs.expanduser("~/.tototasks"),"w") as f:
-			json.dump(dict(tasks=self.tasks),f)
+		self.saveTasks()
 		self.redoListbox()
 
 	def redoListbox(self):
@@ -55,7 +54,12 @@ class Application(tkinter.Frame):
 	def resolve(self,*args,**kwargs):
 #		print("resolve")
 		self.tasks.remove(self.getSelectedTask())
+		self.saveTasks()
 		self.redoListbox()
+
+	def saveTasks(self):
+		with open(fs.expanduser("~/.tototasks"),"w") as f:
+			json.dump(dict(tasks=tasks),f)
 
 app = tkinter.Tk()
 app.title("TOTO")
