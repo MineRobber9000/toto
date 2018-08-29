@@ -14,7 +14,7 @@ class Application(tkinter.Frame):
 		self.entry = tkinter.Entry(self)
 		self.entry.pack()
 #		print("listbox widget")
-		self.list = tkinter.Listbox(self)
+		self.list = tkinter.Listbox(self,selectmode=tkinter.SINGLE)
 #		print("call loadTasks")
 		self.loadTasks()
 		self.list.pack()
@@ -32,23 +32,30 @@ class Application(tkinter.Frame):
 			with open(fs.expanduser("~/.tototasks")) as f:
 				self.tasks = json.load(f)["tasks"]
 #				print("{!r}".format(self.tasks))
-				for entry in self.tasks:
-					self.list.insert("end",entry)
 		else:
 #			print("no tasks file!")
 			self.tasks = []
+		self.redoListbox()
 
 	def add_task(self,*args,**kwargs):
 #		print("add_task "+self.entry.get())
 		self.tasks.append(self.entry.get())
 		with open(fs.expanduser("~/.tototasks"),"w") as f:
 			json.dump(dict(tasks=self.tasks),f)
+		self.redoListbox()
+
+	def redoListbox(self):
 		self.list.delete(0,"end")
 		for entry in self.tasks:
 			self.list.insert("end",entry)
 
+	def getSelectedTask(self):
+		return self.tasks[self.list.curselection()[0]]
+
 	def resolve(self,*args,**kwargs):
-		print("resolve")
+#		print("resolve")
+		self.tasks.remove(self.getSelectedTask())
+		self.redoListbox()
 
 app = tkinter.Tk()
 app.title("TOTO")
