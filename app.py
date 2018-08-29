@@ -12,34 +12,36 @@ class Application(tkinter.Frame):
 	def create_widgets(self):
 		print("entry widget")
 		self.entry = tkinter.Entry(self)
-		self.entry.pack(side="top")
+		self.entry.pack()
 		print("listbox widget")
 		self.list = tkinter.Listbox(self)
 		print("call loadTasks")
 		self.loadTasks()
-		self.pack(side="bottom")
+		self.list.pack()
 		print("add/resolve buttons")
-		self.add_task_button = tkinter.Button(self,text="Add",command=self.add_task)
-		self.add_task_button.pack(side="bottom")
-		self.resolve_button = tkinter.Button(self,text="Resolve",command=self.resolve)
-		self.resolve_button.pack(side="bottom")
+		self.button_frame = tkinter.Frame(self)
+		self.button_frame.pack(side="bottom")
+		self.add_task_button = tkinter.Button(self.button_frame,text="Add",command=self.add_task)
+		self.add_task_button.pack(side="left")
+		self.resolve_button = tkinter.Button(self.button_frame,text="Resolve",command=self.resolve)
+		self.resolve_button.pack(side="left")
 
 	def loadTasks(self):
-		i = 1
 		if fs.exists(fs.expanduser("~/.tototasks")):
 			print("tasks file exists, open it")
 			with open(fs.expanduser("~/.tototasks")) as f:
 				self.tasks = json.load(f)["tasks"]
 				print("{!r}".format(self.tasks))
 				for entry in self.tasks:
-					self.list.insert(i,entry)
-					i+=1
+					self.list.insert("end",entry)
 		else:
 			print("no tasks file!")
 			self.tasks = []
 
 	def add_task(self,*args,**kwargs):
+		print("add_task "+self.entry.get())
 		self.tasks.append(self.entry.get())
+#		self.list.insert("end",self.tasks[-1])
 		with open(fs.expanduser("~/.tototasks"),"w") as f:
 			json.dump(dict(tasks=self.tasks),f)
 
