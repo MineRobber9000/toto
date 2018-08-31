@@ -59,7 +59,7 @@ class Application(tkinter.Frame):
 
 	def saveTasks(self):
 		with open(fs.expanduser("~/.tototasks"),"w") as f:
-			json.dump(dict(tasks=tasks),f)
+			json.dump(dict(tasks=self.tasks),f)
 
 app = tkinter.Tk()
 app.title("TOTO")
